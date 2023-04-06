@@ -94,7 +94,7 @@ namespace emulatorLauncher
         {
             string installerUrl = RegistryKeyEx.GetRegistryValue(
                 RegistryKeyEx.CurrentUser,
-                @"SOFTWARE\ProjectArcade",
+                @"SOFTWARE\RetroBat",
                 "InstallRootUrl") as string;
 
             if (string.IsNullOrEmpty(installerUrl))

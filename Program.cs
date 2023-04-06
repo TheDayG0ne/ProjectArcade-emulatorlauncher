@@ -153,14 +153,14 @@ namespace emulatorLauncher
                 if (!Zip.IsCompressedFile(source))
                     return;
 
-                using (var progress = new ProgressInformation("Распаковка..."))
+                using (var progress = new ProgressInformation("Extraction..."))
                 {
                     string extractionPath = Path.ChangeExtension(source, ".game");
 
                     try { Directory.Delete(extractionPath, true); }
                     catch { }
 
-                    Zip.Extract(source, extractionPath, null, (o, e) => progress.SetText("Распаковка... " + e.ProgressPercentage + "%"));
+                    Zip.Extract(source, extractionPath, null, (o, e) => progress.SetText("Extraction... " + e.ProgressPercentage + "%"));
                     Zip.CleanupUncompressedWSquashFS(source, extractionPath);
                     return;
                 }

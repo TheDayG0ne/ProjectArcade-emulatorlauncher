@@ -9,11 +9,38 @@ using emulatorLauncher.Tools;
 namespace emulatorLauncher
 {
     partial class YuzuGenerator : Generator
-    {
+    {        
+        /// <summary>
+        /// Cf. https://github.com/yuzu-emu/yuzu/blob/master/src/input_common/drivers/sdl_driver.cpp
+        /// </summary>
+        /// <param name="pcsx2ini"></param>
+        private static void UpdateSdlControllersWithHints(IniFile ini)
+        {
+            var hints = new List<string>();
+
+            if (ini.GetValue("Controls", "enable_raw_input\\default") != "false" || ini.GetValue("Controls", "enable_raw_input") == "false")
+                hints.Add("SDL_HINT_JOYSTICK_RAWINPUT = 1");
+
+            if (ini.GetValue("Controls", "enable_joycon_driver\\default") == "true" || ini.GetValue("Controls", "enable_joycon_driver") != "false")
+                hints.Add("SDL_HINT_JOYSTICK_HIDAPI_JOY_CONS = 0");
+            else 
+                hints.Add("SDL_HINT_JOYSTICK_HIDAPI_JOY_CONS = 1");
+
+            hints.Add("SDL_HINT_JOYSTICK_HIDAPI_PS4_RUMBLE = 1");
+            hints.Add("SDL_HINT_JOYSTICK_HIDAPI_PS5_RUMBLE = 1");
+            hints.Add("SDL_HINT_JOYSTICK_HIDAPI_SWITCH = 1");
+            hints.Add("SDL_HINT_JOYSTICK_HIDAPI_XBOX = 0");
+
+            SdlGameController.ReloadWithHints(string.Join(",", hints));
+            Program.Controllers.ForEach(c => c.ResetSdlController());
+        }
+
         private void CreateControllerConfiguration(IniFile ini)
         {
             if (Program.SystemConfig.isOptSet("disableautocontrollers") && Program.SystemConfig["disableautocontrollers"] == "1")
                 return;
+
+            UpdateSdlControllersWithHints(ini);
 
             foreach (var controller in this.Controllers.OrderBy(i => i.PlayerIndex))
                 ConfigureInput(controller, ini);
@@ -156,13 +183,16 @@ namespace emulatorLauncher
                         }
                     }
                 }
-
-
             }
+
+            bool revertButtons = Features.IsSupported("yuzu_gamepadbuttons") && SystemConfig.isOptSet("yuzu_gamepadbuttons") && SystemConfig.getOptBoolean("yuzu_gamepadbuttons");
 
             foreach (var map in Mapping)
             {
                 string name = player + map.Value;
+
+                if (revertButtons && reversedButtons.ContainsKey(map.Key))
+                    name = player + reversedButtons[map.Key];
 
                 string cvalue = FromInput(controller, cfg[map.Key], yuzuGuid, index);
 
@@ -376,6 +406,14 @@ namespace emulatorLauncher
 
             { InputKey.l3,              "button_lstick"},
             { InputKey.r3,              "button_rstick"},
+        };
+
+        static InputKeyMapping reversedButtons = new InputKeyMapping()
+        {
+            { InputKey.b,               "button_b" },
+            { InputKey.a,               "button_a" },
+            { InputKey.y,               "button_x" },
+            { InputKey.x,               "button_y" },
         };
     }
 }

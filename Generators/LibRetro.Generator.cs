@@ -35,8 +35,6 @@ namespace emulatorLauncher.libRetro
 
             retroarchConfig["global_core_options"] = "true";
             retroarchConfig["core_options_path"] = ""; //',             '"/userdata/system/configs/retroarch/cores/retroarch-core-options.cfg"')          
-            retroarchConfig["rgui_extended_ascii"] = "true";
-            retroarchConfig["rgui_show_start_screen"] = "false";           
             retroarchConfig["menu_driver"] = "ozone";
             retroarchConfig["ui_menubar_enable"] = "false";
             retroarchConfig["video_fullscreen"] = "true";
@@ -45,7 +43,11 @@ namespace emulatorLauncher.libRetro
             retroarchConfig["notification_show_remap_load"] = "false";
             retroarchConfig["driver_switch_enable"] = "true";
             retroarchConfig["input_driver"] = "dinput";
-
+            
+            retroarchConfig["rgui_extended_ascii"] = "true";
+            retroarchConfig["rgui_show_start_screen"] = "false";
+            retroarchConfig["rgui_browser_directory"] = AppConfig.GetFullPath("roms") ?? "default";
+            
             BindBoolFeature(retroarchConfig, "pause_nonactive", "use_guns", "true", "false", true); // Pause when calibrating gun...
             BindBoolFeature(retroarchConfig, "input_autodetect_enable", "disableautocontrollers", "true", "false", true);
 
@@ -228,7 +230,7 @@ namespace emulatorLauncher.libRetro
             BindBoolFeature(retroarchConfig, "video_frame_delay_auto", "video_frame_delay_auto", "true", "false"); // Auto frame delay (input delay reduction via frame timing)
             BindBoolFeature(retroarchConfig, "quit_press_twice", "PressTwice", "true", "false"); // Press hotkeys twice to exit
             
-            BindFeature(retroarchConfig, "video_font_enable", "OnScreenMsg", "true"); // OSD notifications
+            BindFeature(retroarchConfig, "video_font_enable", "OnScreenMsg", "false"); // OSD notifications
             BindFeature(retroarchConfig, "video_rotation", "RotateVideo", "0"); // video rotation
             BindFeature(retroarchConfig, "screen_orientation", "RotateScreen", "0"); // screen orientation
             BindFeature(retroarchConfig, "crt_switch_resolution", "CRTSwitch", "0"); // CRT Switch
@@ -272,6 +274,8 @@ namespace emulatorLauncher.libRetro
             }
 
             // Default controllers
+            retroarchConfig.DisableAll("input_libretro_device_p");
+
             retroarchConfig["input_libretro_device_p1"] = coreToP1Device.ContainsKey(core) ? coreToP1Device[core] : "1";
             retroarchConfig["input_libretro_device_p2"] = coreToP2Device.ContainsKey(core) ? coreToP2Device[core] : "1";
 
@@ -279,41 +283,12 @@ namespace emulatorLauncher.libRetro
             if (Controllers.Count > 2 && (core == "snes9x_next" || core == "snes9x"))
                 retroarchConfig["input_libretro_device_p2"] = "257";
 
-            if (core == "mednafen_psx" || core == "mednafen_psx_hw" || core == "pcsx_rearmed" || core == "duckstation")
+            if (core == "mednafen_psx" || core == "mednafen_psx_hw" || core == "pcsx_rearmed" || core == "duckstation" || core == "swanstation")
             {
-                if (SystemConfig.isOptSet("psxcontroller1"))
+                if (Features.IsSupported("psxcontroller1") && SystemConfig.isOptSet("psxcontroller1"))
                     retroarchConfig["input_libretro_device_p1"] = SystemConfig["psxcontroller1"];
-                if (SystemConfig.isOptSet("psxcontroller2"))
+                if (Features.IsSupported("psxcontroller2") && SystemConfig.isOptSet("psxcontroller2"))
                     retroarchConfig["input_libretro_device_p2"] = SystemConfig["psxcontroller2"];
-            }
-
-            //fuse specifics
-            if (core == "fuse")
-            {
-                //player 1 controller - sinclair 1 controller used as default as used by most games
-                if (SystemConfig.isOptSet("zx_controller1") && !string.IsNullOrEmpty(SystemConfig["zx_controller1"])) 
-                    retroarchConfig["input_libretro_device_p1"] = SystemConfig["zx_controller1"];
-                else if (Features.IsSupported("zx_controller1"))
-                    retroarchConfig["input_libretro_device_p1"] = "769";
-                
-                //player 2 controller - sinclair 2 as default
-                if (SystemConfig.isOptSet("zx_controller2") && !string.IsNullOrEmpty(SystemConfig["zx_controller2"]))
-                    retroarchConfig["input_libretro_device_p2"] = SystemConfig["zx_controller2"];
-                else if (Features.IsSupported("zx_controller2"))
-                    retroarchConfig["input_libretro_device_p2"] = "1025";
-
-                //if using keyboard only option, disable controllers and use keyboard as device_p3 as stated in libretro core documentation
-                //3 options : keyboard only (disables joysticks), joysticks only (disables keyboard) or keyboard + joysticks (add keyboard as p3)
-                if (SystemConfig.isOptSet("zx_control_type") && !string.IsNullOrEmpty(SystemConfig["zx_control_type"]) && SystemConfig["zx_control_type"] == "2")
-                {
-                    retroarchConfig["input_libretro_device_p1"] = "0";
-                    retroarchConfig["input_libretro_device_p2"] = "0";
-                    retroarchConfig["input_libretro_device_p3"] = "259";
-                }
-                else if (Features.IsSupported("zx_control_type") && !string.IsNullOrEmpty(SystemConfig["zx_control_type"]) && SystemConfig["zx_control_type"] == "3")
-                    retroarchConfig["input_libretro_device_p3"] = "259";
-                else if (Features.IsSupported("zx_control_type") && !string.IsNullOrEmpty(SystemConfig["zx_control_type"]) && SystemConfig["zx_control_type"] == "1")
-                    retroarchConfig["input_libretro_device_p3"] = "0";
             }
 
             if (LibretroControllers.WriteControllersConfig(retroarchConfig, system, core))
@@ -334,6 +309,7 @@ namespace emulatorLauncher.libRetro
 
             // Language
             SetLanguage(retroarchConfig);
+
 
             // Custom overrides : allow the user to configure directly retroarch.cfg via batocera.conf via lines like : snes.retroarch.menu_driver=rgui
             foreach (var user_config in SystemConfig)

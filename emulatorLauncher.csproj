@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>emulatorLauncher</RootNamespace>
     <AssemblyName>emulatorLauncher</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup>
@@ -30,6 +31,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -44,20 +46,21 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="SharpDX, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SharpDX.dll</HintPath>
+      <HintPath>D:\Users\TheDayG0ne\Documents\GitHub\TheDayG0ne\batocera-ports\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DirectInput, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SharpDX.DirectInput.dll</HintPath>
+      <HintPath>D:\Users\TheDayG0ne\Documents\GitHub\TheDayG0ne\batocera-ports\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.XInput, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SharpDX.XInput.dll</HintPath>
+      <HintPath>D:\Users\TheDayG0ne\Documents\GitHub\TheDayG0ne\batocera-ports\SharpDX.XInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -97,6 +100,7 @@
     <Compile Include="Common\WebTools.cs" />
     <Compile Include="Common\Joysticks\WinmmJoystick.cs" />
     <Compile Include="Common\XmlExtensions.cs" />
+    <Compile Include="Common\XmlDeserializer.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="EsFeaturesPoBuilder.cs" />
     <Compile Include="FakeBezelFrm.cs">
@@ -132,7 +136,10 @@
     <Compile Include="Generators\Ryujinx.Controllers.cs">
       <DependentUpon>Ryujinx.Generator.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generators\TeknoParrot.generator.cs" />
+    <Compile Include="Generators\TeknoParrot.Generator.cs" />
+    <Compile Include="Generators\TeknoParrot.Controllers.cs">
+      <DependentUpon>TeknoParrot.Generator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generators\Tsugaru.Generator.cs" />
     <Compile Include="Generators\Yuzu.Generator.cs" />
     <Compile Include="Generators\Yuzu.Controllers.cs">
@@ -174,6 +181,9 @@
       <DependentUpon>Rpcs3.Generator.cs</DependentUpon>
     </Compile>
     <Compile Include="Generators\OpenBor.Generator.cs" />
+    <Compile Include="Generators\OpenBor.Controllers.cs">
+      <DependentUpon>OpenBor.Generator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generators\Model2.Generator.cs" />
     <Compile Include="Generators\Uae.Generator.cs" />
     <Compile Include="Generators\Snes9x.Generator.cs" />
@@ -264,6 +274,7 @@
     <None Include="..\.emulationstation\es_features.cfg">
       <Link>es_features.cfg</Link>
     </None>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -290,7 +301,7 @@
   <ItemGroup>
     <Content Include="icon.ico" />
     <None Include="Resources\blacklisted-words.txt" />
-    <None Include="Resources\projectarcade.png" />
+    <None Include="Resources\retrobat.png" />
     <None Include="Reshader\Bezel.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
