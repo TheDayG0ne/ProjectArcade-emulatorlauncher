@@ -54,7 +54,7 @@ namespace emulatorLauncher
             var bezels = BezelFiles.GetBezelFiles(system, rom, resolution);
 
             // Check if it's retrobat version
-            if (!string.IsNullOrEmpty(versionInfo.FileDescription) && versionInfo.FileDescription.Contains("Retrobat"))
+            if (!string.IsNullOrEmpty(versionInfo.FileDescription) && versionInfo.FileDescription.Contains("ProjectArcade"))
             {
                 // Disable internal effects ( scanlines )
                 WriteApple2Option("Video Style", "0");
