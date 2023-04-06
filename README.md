@@ -28,7 +28,7 @@ Huge thanks to these people:
 
 - [Factory Caruso](https://github.com/fabricecaruso) - For the development of EmulatorLauncher
 
-- [Tartifless] (https://github.com/Tartifless) - For responsiveness and willingness to help
+- [Tartifless](https://github.com/Tartifless) - For responsiveness and willingness to help
 
 ## License
 
