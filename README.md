@@ -30,7 +30,7 @@ Huge thanks to these people:
 
 - [Kaylh (RetroBat Team)](https://github.com/kaylh) - For informative documentation, and help...
 
-- [Factory Caruso](https://github.com/fabricecaruso) - For the development of EmulatorLauncher
+- [Fabrice Caruso](https://github.com/fabricecaruso) - For the development of EmulatorLauncher
 
 - [Tartifless](https://github.com/Tartifless) - For responsiveness and willingness to help
 
